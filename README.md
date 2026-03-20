@@ -1,6 +1,6 @@
 # EcoDispatch — Carbon-Aware Data Center Energy Optimization Prototype
 
-EcoDispatch is a Python-based simulation platform for exploring how a data center can coordinate grid power, on-site solar, battery storage, and flexible workloads to reduce emissions and electricity cost. It is designed as an engineering prototype and portfolio project rather than a production dispatch controller.
+EcoDispatch is a Python-based prototype for modeling how a data center can coordinate grid electricity, on-site solar, battery storage, and flexible workloads to reduce emissions and energy cost. It is designed as a simulation and scenario-analysis tool for engineering exploration, not as a production dispatch controller.
 
 The project matters because data centers are large, time-varying energy consumers, and even modest improvements in when and how they draw power can materially reduce carbon impact. EcoDispatch provides a concrete way to study those tradeoffs through repeatable benchmark scenarios, strategy comparisons, and an interactive dashboard.
 
@@ -98,7 +98,7 @@ EcoDispatch/
 ## Installation
 
 ```bash
-git clone https://github.com/<your-username>/EcoDispatch.git
+git clone https://github.com/rosethperera/EcoDispatch.git
 cd EcoDispatch
 
 python -m venv .venv
