@@ -172,23 +172,23 @@ Examples from recent benchmark runs:
 
 ## Screenshots
 
-Add screenshots to `docs/screenshots/` and update the paths below when you are ready.
+Representative visuals from the prototype are included below.
 
 ### Dashboard view
 
-`docs/screenshots/dashboard-overview.png`
+![EcoDispatch dashboard overview](docs/screenshots/dashboard-overview.svg)
 
 ### Energy dispatch chart
 
-`docs/screenshots/energy-dispatch-chart.png`
+![Energy dispatch chart](docs/screenshots/energy-dispatch-chart.png)
 
 ### Battery SOC chart
 
-`docs/screenshots/battery-soc-chart.png`
+![Battery state of charge chart](docs/screenshots/battery-soc-chart.png)
 
 ### Strategy comparison
 
-`docs/screenshots/strategy-comparison.png`
+![Strategy comparison chart](docs/screenshots/strategy-comparison.png)
 
 ## Folder Notes
 
