@@ -22,9 +22,17 @@ from ecodispatch.simulation import EcoDispatch
 from ecodispatch.metrics import calculate_metrics
 from ecodispatch.visualization import plot_dispatch, plot_battery_soc
 
+
+OUTPUTS_DIR = os.path.join(os.path.dirname(__file__), "outputs")
+
+
+def ensure_outputs_dir():
+    """Create the outputs directory if it does not exist."""
+    os.makedirs(OUTPUTS_DIR, exist_ok=True)
+
 def create_demo_data():
     """Create realistic demo data for San Francisco."""
-    print("🌆 Creating San Francisco demo data...")
+    print("Creating San Francisco demo data...")
 
     # 24-hour simulation
     hours = pd.date_range('2023-01-15', periods=24, freq='h')  # Sunny January day
@@ -71,7 +79,7 @@ def create_demo_data():
 
 def run_strategy_comparison():
     """Run all strategies and compare results."""
-    print("\n🔬 Running strategy comparison...")
+    print("\nRunning strategy comparison...")
 
     data = create_demo_data()
     strategies = ['baseline', 'carbon_min', 'cost_min', 'balanced', 'optimized']
@@ -95,10 +103,16 @@ def run_strategy_comparison():
 def print_comparison_table(results):
     """Print a nice comparison table of all strategies."""
     print("\n" + "="*80)
-    print("🎯 ECODISPATCH STRATEGY COMPARISON")
+    print("ECODISPATCH STRATEGY COMPARISON")
     print("="*80)
-
-    print("<25")
+    header = (
+        f"{'Strategy':<12}"
+        f"{'Emissions (kgCO2)':>20}"
+        f"{'Cost ($)':>14}"
+        f"{'Renewable (%)':>18}"
+        f"{'Peak Grid (kW)':>18}"
+    )
+    print(header)
     print("-" * 80)
 
     for strategy, data in results.items():
@@ -106,14 +120,20 @@ def print_comparison_table(results):
         emissions_kg = m['total_emissions_gco2'] / 1000
         cost = m['total_cost_usd']
         renewable_pct = m['renewable_fraction'] * 100
-
-        print("<25")
+        peak_grid = m['peak_grid_kw']
+        print(
+            f"{strategy:<12}"
+            f"{emissions_kg:>20,.1f}"
+            f"{cost:>14,.2f}"
+            f"{renewable_pct:>18.1f}"
+            f"{peak_grid:>18,.1f}"
+        )
 
     print("="*80)
 
 def demonstrate_workload_shifting():
     """Show how workload shifting reduces emissions."""
-    print("\n⚡ Demonstrating Workload Shifting...")
+    print("\nDemonstrating Workload Shifting...")
 
     data = create_demo_data()
 
@@ -136,28 +156,32 @@ def demonstrate_workload_shifting():
     emissions_saved = baseline_metrics['total_emissions_gco2'] - carbon_min_metrics['total_emissions_gco2']
     cost_saved = baseline_metrics['total_cost_usd'] - carbon_min_metrics['total_cost_usd']
 
-    print("\n📊 Workload Shifting Impact:")
+    print("\nWorkload Shifting Impact:")
     print(f"  Emissions Saved: {emissions_saved/1000:.1f} kgCO2 ({emissions_saved/baseline_metrics['total_emissions_gco2']*100:.1f}%)")
     print(f"  Cost Saved: ${cost_saved:.2f} ({cost_saved/baseline_metrics['total_cost_usd']*100:.1f}%)")
-    print(f"  Flexible Load Shifted: {float(abs(carbon_min['workload_shifts']).sum()):.0f} kWh")
+    shifted_load_kwh = float(carbon_min['workload_shifts']['shifted_load_kw'].abs().sum())
+    print(f"  Flexible Load Shifted: {shifted_load_kwh:.0f} kWh")
 
 def create_visualizations(results):
     """Generate plots for the best strategy."""
-    print("\n📈 Creating visualizations...")
+    print("\nCreating visualizations...")
+    ensure_outputs_dir()
 
     # Use carbon_min results (most impressive)
     best_result = results['carbon_min']['result']
 
     # Create plots
-    plot_dispatch(best_result, 'demo_dispatch.png')
-    plot_battery_soc(best_result['battery_soc'], 'demo_battery_soc.png')
+    dispatch_path = os.path.join(OUTPUTS_DIR, 'demo_dispatch.png')
+    battery_path = os.path.join(OUTPUTS_DIR, 'demo_battery_soc.png')
+    plot_dispatch(best_result, dispatch_path)
+    plot_battery_soc(best_result['battery_soc'], battery_path)
 
-    print("  ✓ Created demo_dispatch.png (energy sources over time)")
-    print("  ✓ Created demo_battery_soc.png (battery charge level)")
+    print("  Created outputs/demo_dispatch.png (energy sources over time)")
+    print("  Created outputs/demo_battery_soc.png (battery charge level)")
 
 def main():
     """Main demo function."""
-    print("🚀 EcoDispatch: Carbon-Aware Data Center Energy Optimizer")
+    print("EcoDispatch: Carbon-Aware Data Center Energy Optimizer")
     print("="*60)
 
     # Run comparison
@@ -173,10 +197,10 @@ def main():
     create_visualizations(results)
 
     print("\n" + "="*60)
-    print("✅ Demo Complete!")
-    print("📁 Check the generated plot files: demo_dispatch.png, demo_battery_soc.png")
-    print("🌐 Run 'streamlit run dashboard.py' for interactive exploration")
-    print("🔧 Hardware demo available in hardware/ directory")
+    print("Demo Complete!")
+    print("Check the generated plot files in outputs/: demo_dispatch.png, demo_battery_soc.png")
+    print("Run 'streamlit run dashboard.py' for interactive exploration")
+    print("Hardware demo available in hardware/ directory")
     print("="*60)
 
 if __name__ == "__main__":

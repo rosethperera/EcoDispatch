@@ -169,7 +169,7 @@ class SolarPV:
         # Calculate power
         power_kw = self.capacity * (irradiance / 1000) * self.efficiency * temp_derate * wind_boost
 
-        return max(0, power_kw)
+        return np.maximum(0, power_kw)
 
     def _clear_sky_irradiance(self, datetime) -> float:
         """
@@ -217,9 +217,6 @@ class SolarPV:
         elevation_deg = np.degrees(elevation)
         azimuth_deg = np.degrees(azimuth)
 
-        if elevation_deg <= 0:
-            return 0  # Night time
-
         # Air mass (simplified)
         air_mass = 1 / np.cos(np.radians(90 - elevation_deg))
 
@@ -234,7 +231,10 @@ class SolarPV:
         incidence_angle = self._incidence_angle(elevation_deg, azimuth_deg)
         incidence_modifier = np.cos(np.radians(incidence_angle))
 
-        return max(0, irradiance * incidence_modifier)
+        # Apply night time condition
+        irradiance = np.where(elevation_deg <= 0, 0, irradiance * incidence_modifier)
+
+        return np.maximum(0, irradiance)
 
     def _incidence_angle(self, solar_elevation: float, solar_azimuth: float) -> float:
         """

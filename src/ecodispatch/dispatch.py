@@ -49,7 +49,7 @@ class WorkloadScheduler:
         max_savings = 0
 
         # Search within shift window
-        start_hour = max(0, current_hour - self.max_shift_hours)
+        start_hour = current_hour + 1
         end_hour = min(n_hours, current_hour + self.max_shift_hours + 1)
 
         for hour in range(start_hour, end_hour):
@@ -102,20 +102,19 @@ class DispatchStrategy:
         Returns:
             Dict of dispatched power by source
         """
+        # Ensure parameters are scalars
+        demand_kw = float(demand_kw)
+        carbon_intensity = float(carbon_intensity)
+        price = float(price)
+        battery_soc = float(battery_soc)
+        flexible_load = float(flexible_load)
+        available_sources = {k: float(v) for k, v in available_sources.items()}
+
         dispatch = {'grid': 0.0, 'solar': 0.0, 'battery': 0.0}
 
         if self.strategy == Strategy.OPTIMIZED:
             return self._optimize_dispatch(available_sources, demand_kw,
                                          carbon_intensity, price, battery_soc)
-
-        # Original logic with workload shifting for carbon_min
-        if self.strategy == Strategy.CARBON_MIN and flexible_load > 0:
-            # Try to shift flexible load to lower carbon period
-            # This is a simplified implementation - in practice would need full schedule
-            if carbon_intensity > 300:  # High carbon threshold
-                # Assume we can shift some load (simplified)
-                shift_amount = min(flexible_load * 0.5, demand_kw * 0.2)
-                demand_kw -= shift_amount  # Reduce current demand
 
         if self.strategy == Strategy.BASELINE:
             # Always use grid first, then solar, then battery

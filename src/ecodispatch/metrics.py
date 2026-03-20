@@ -47,7 +47,8 @@ def calculate_metrics(results: Dict[str, pd.DataFrame],
     total_cost = float((dispatch['grid'] * electricity_price).sum())
 
     # Renewable energy fraction
-    renewable_energy_kwh = solar_energy_kwh + max(0, dispatch['battery'].sum())  # Battery discharge
+    battery_discharge_kwh = float(dispatch['battery'].clip(lower=0).sum())
+    renewable_energy_kwh = solar_energy_kwh + battery_discharge_kwh
     renewable_fraction = renewable_energy_kwh / total_energy_kwh if total_energy_kwh > 0 else 0
 
     metrics = {

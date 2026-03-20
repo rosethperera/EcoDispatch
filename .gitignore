@@ -130,10 +130,12 @@ dmypy.json
 .pyre/
 
 # Project specific
-*.png
-*.jpg
-*.jpeg
-*.gif
+outputs/*.png
+outputs/*.jpg
+outputs/*.jpeg
+outputs/*.gif
+outputs/*.csv
+outputs/*.html
 demo_results.py
 demo_dispatch.png
 demo_battery_soc.png

@@ -41,7 +41,7 @@ class CarbonIntensityAPI:
         # For demo purposes, generate synthetic data
         # In production, this would call real APIs
 
-        timestamps = pd.date_range(start_time, end_time, freq='H')
+        timestamps = pd.date_range(start_time, end_time, freq='h')
         n_hours = len(timestamps)
 
         # Generate realistic carbon intensity profile
@@ -111,7 +111,7 @@ class WeatherAPI:
             DataFrame with weather data
         """
         # For demo purposes, generate synthetic weather data
-        timestamps = pd.date_range(start_time, end_time, freq='H')
+        timestamps = pd.date_range(start_time, end_time, freq='h')
         n_hours = len(timestamps)
 
         # Generate realistic weather patterns
@@ -186,7 +186,7 @@ class ElectricityPriceAPI:
             DataFrame with price data
         """
         # Generate synthetic price data
-        timestamps = pd.date_range(start_time, end_time, freq='H')
+        timestamps = pd.date_range(start_time, end_time, freq='h')
         n_hours = len(timestamps)
 
         # Base price with time-of-day variation

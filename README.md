@@ -1,269 +1,224 @@
-# EcoDispatch: Carbon-Aware Data Center Energy Optimizer
+# EcoDispatch — Carbon-Aware Data Center Energy Optimization Prototype
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-Web--App-red.svg)](https://streamlit.io/)
-[![SciPy](https://img.shields.io/badge/SciPy-Optimization-orange.svg)](https://scipy.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+EcoDispatch is a Python-based simulation platform for exploring how a data center can coordinate grid power, on-site solar, battery storage, and flexible workloads to reduce emissions and electricity cost. It is designed as an engineering prototype and portfolio project rather than a production dispatch controller.
 
-**Optimizing Renewable Energy Utilization and Workload Scheduling to Minimize Carbon Footprint in Data Center Operations**
+The project matters because data centers are large, time-varying energy consumers, and even modest improvements in when and how they draw power can materially reduce carbon impact. EcoDispatch provides a concrete way to study those tradeoffs through repeatable benchmark scenarios, strategy comparisons, and an interactive dashboard.
 
-*Transforming data centers from energy consumers into sustainability leaders through intelligent energy dispatch and carbon-aware computing.*
+## Why This Project Matters
 
-## 🌟 Key Achievements
+- Data center energy demand is growing alongside AI and cloud workloads.
+- Grid carbon intensity changes hour by hour, so scheduling decisions can affect emissions.
+- On-site solar and batteries add flexibility, but they also add operational complexity.
+- Prototype tools like this help evaluate dispatch strategies before moving toward real operational systems.
 
-- **🏆 15-35% Carbon Emission Reduction** demonstrated across multiple optimization strategies
-- **💰 Cost Savings** through intelligent energy arbitrage
-- **🔋 Realistic Battery Modeling** with degradation and temperature effects
-- **☀️ Astronomical Solar Modeling** with weather integration
-- **🧠 Multi-Objective Optimization** using SciPy
-- **🌐 Interactive Web Dashboard** with real-time controls
-- **🔧 Hardware Integration** with Arduino/Raspberry Pi demo
+## Key Features
 
-## 🚀 Quick Demo
+- Time-series simulation of demand, carbon intensity, weather, electricity price, and energy dispatch.
+- Multiple dispatch strategies: `baseline`, `carbon_min`, `cost_min`, `balanced`, and `optimized`.
+- Battery model with state-of-charge tracking, power limits, and degradation effects.
+- Solar generation model with weather-aware adjustments and configurable capacity.
+- Flexible workload shifting for carbon-aware scheduling experiments.
+- Streamlit dashboard for scenario configuration and strategy comparison.
+- Plot generation for dispatch mix and battery state-of-charge.
+- Hardware demo stubs for Arduino and Raspberry Pi integration concepts.
 
-```bash
-# Clone and run the impressive demo
-git clone https://github.com/yourusername/ecodispatch.git
-cd ecodispatch
-pip install -r requirements.txt
-python demo.py
+## System Architecture
+
+EcoDispatch is organized as a small simulation stack:
+
+1. Data loaders generate or ingest time-series inputs for demand, price, weather, and carbon intensity.
+2. Component models estimate available solar generation, battery behavior, and flexible demand.
+3. Dispatch strategies decide how much energy comes from grid, solar, and battery at each timestep.
+4. Metrics summarize emissions, cost, renewable utilization, and peak grid draw.
+5. The dashboard and demo scripts present results through charts and comparison tables.
+
+```text
++-------------------+      +----------------------+      +----------------------+
+| Input Data        | ---> | Simulation Engine    | ---> | Results + KPIs       |
+| demand            |      | dispatch strategies  |      | emissions            |
+| carbon intensity  |      | battery model        |      | cost                 |
+| electricity price |      | solar model          |      | renewable fraction   |
+| weather           |      | workload shifting    |      | peak grid draw       |
++-------------------+      +----------------------+      +----------------------+
+                                      |
+                                      v
+                           +------------------------+
+                           | Presentation Layer     |
+                           | Streamlit dashboard    |
+                           | demo plots / outputs   |
+                           +------------------------+
 ```
 
-**See the results:**
-- Strategy comparison with emissions/cost savings
-- Workload shifting impact
-- Generated visualization plots
+## Tech Stack
 
-## 📊 Live Results
+- Python
+- Pandas
+- NumPy
+- SciPy
+- Matplotlib
+- Streamlit
+- Requests
 
-| Strategy | Emissions | Cost | Renewable % | Key Feature |
-|----------|-----------|------|-------------|-------------|
-| **Carbon_Min** | 4,980 kgCO2 | $2,180 | 37% | Workload shifting |
-| **Optimized** | 4,750 kgCO2 | $2,250 | 40% | Multi-objective |
-| **Baseline** | 6,195 kgCO2 | $2,580 | 13% | Grid-first |
+## Repository Structure
 
-*24-hour simulation results for 21,000 kWh data center load*
-
-## 🏗️ Architecture
-
+```text
+EcoDispatch/
+├── src/
+│   └── ecodispatch/
+│       ├── __init__.py
+│       ├── data_integration.py
+│       ├── dispatch.py
+│       ├── metrics.py
+│       ├── models.py
+│       ├── simulation.py
+│       └── visualization.py
+├── data/
+│   └── sample_data.csv
+├── docs/
+│   ├── architecture.md
+│   └── screenshots/
+│       └── README.md
+├── hardware/
+│   ├── README.md
+│   ├── battery_monitor_arduino.ino
+│   └── battery_monitor_rpi.py
+├── outputs/
+│   └── .gitkeep
+├── tests/
+│   └── test_models.py
+├── dashboard.py
+├── demo.py
+├── main.py
+├── requirements.txt
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   INPUT DATA    │    │  SIMULATION     │    │   RESULTS       │
-│                 │    │   ENGINE        │    │                 │
-│ • Carbon        │───▶│ • Time-series   │───▶│ • Emissions     │
-│   Intensity     │    │   Optimization  │    │ • Costs         │
-│ • Weather       │    │ • Battery       │    │ • Utilization   │
-│ • Electricity   │    │   Degradation   │    │ • Plots         │
-│   Prices        │    │ • Workload      │    │                 │
-│ • Demand        │    │   Shifting      │    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                              │
-                              ▼
-                   ┌─────────────────┐
-                   │   DASHBOARD     │
-                   │   & HARDWARE    │
-                   │                 │
-                   │ • Streamlit UI  │
-                   │ • Arduino/RPi   │
-                   │ • Real-time     │
-                   └─────────────────┘
-```
-
-## ✨ New Features (Latest Update)
-
-### 🔋 Enhanced Battery Modeling
-- **Realistic degradation** with cycle and calendar aging
-- **Temperature effects** on performance and capacity
-- **State-of-health tracking** over system lifetime
-
-### ☀️ Advanced Solar PV Modeling
-- **Astronomical solar position** calculations
-- **Weather integration** (cloud cover, temperature, wind)
-- **Realistic irradiance modeling** with atmospheric effects
-
-### 🧠 Multi-Objective Optimization
-- **Scipy-based optimization** for dispatch decisions
-- **Carbon-cost balancing** algorithms
-- **Flexible workload scheduling** with carbon-aware shifting
-
-### 🌐 Real-Time Data Integration
-- **Carbon intensity APIs** (WattTime, electricity maps)
-- **Weather data** for solar forecasting
-- **Electricity pricing** integration
-- **Real-time simulation** capabilities
-
-### 📊 Interactive Web Dashboard
-- **Streamlit-based UI** for real-time monitoring
-- **Interactive parameter adjustment**
-- **Real-time visualization** of dispatch decisions
-- **Performance metrics** dashboard
-
-### 🔧 Hardware Integration
-- **Arduino battery monitoring** with sensors
-- **Raspberry Pi control system** for relay management
-- **Safety systems** with automatic protection
-- **Real hardware demo** with physical components
-
-## Features
-
-- **Time-series simulation** of data center energy demand and renewable generation
-- **Battery storage modeling** with realistic constraints and degradation
-- **Solar PV generation** with weather-dependent performance
-- **Carbon intensity awareness** with real-time data integration
-- **Workload categorization** (critical vs. flexible loads)
-- **Flexible load scheduling** to minimize carbon emissions
-- **Multiple dispatch strategies**: baseline, carbon-minimizing, cost-minimizing, balanced, optimized
-- **Comprehensive metrics**: emissions, costs, utilization rates, peak demand
-- **Interactive web dashboard** with real-time visualization
-- **Hardware demo** with Arduino/Raspberry Pi integration
 
 ## Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/ecodispatch.git
-cd ecodispatch
+git clone https://github.com/<your-username>/EcoDispatch.git
+cd EcoDispatch
 
-# Install dependencies
+python -m venv .venv
+.venv\Scripts\activate
+
 pip install -r requirements.txt
 ```
 
-## Quick Start
+If you are using macOS or Linux, activate the virtual environment with:
 
-### Software Simulation
-
-```python
-from ecodispatch import EcoDispatch
-from ecodispatch.data_integration import load_real_data
-
-# Load real data
-data = load_real_data(latitude=37.7749, longitude=-122.4194, days=1)
-
-# Run simulation with carbon-minimizing strategy
-results = EcoDispatch.simulate(data, strategy='carbon_min')
-
-# View results
-print(f"Total emissions: {results['metrics']['total_emissions_gco2']/1000:.1f} kgCO2")
+```bash
+source .venv/bin/activate
 ```
 
-### Web Dashboard
+## How To Run The Prototype
+
+### Run the demo script
+
+```bash
+python demo.py
+```
+
+Expected behavior:
+
+- runs all dispatch strategies
+- prints a comparison table in the terminal
+- writes charts to `outputs/`
+
+### Run the Streamlit dashboard
 
 ```bash
 streamlit run dashboard.py
 ```
 
-### Hardware Demo
+The dashboard allows you to:
 
-1. **Arduino Setup:**
-   - Upload `hardware/battery_monitor_arduino.ino` to Arduino
-   - Connect sensors as described in hardware README
+- adjust battery size, solar size, and flexible load fraction
+- run a single dispatch strategy
+- compare all strategies side by side
+- inspect dispatch, emissions, battery SOC, and weather summaries
 
-2. **Raspberry Pi Setup:**
-   ```bash
-   cd hardware
-   python3 battery_monitor_rpi.py
-   ```
+### Run the test suite
 
-## Architecture
-
-The system consists of several key modules:
-
-### Core Modules
-- **`simulation.py`**: Main simulation engine with enhanced features
-- **`models.py`**: Mathematical models for battery, solar, and demand with degradation
-- **`dispatch.py`**: Optimization algorithms with workload scheduling
-- **`metrics.py`**: KPI calculations and performance analysis
-- **`visualization.py`**: Plotting and analysis functions
-
-### Data Integration
-- **`data_integration.py`**: APIs for carbon intensity, weather, and pricing data
-
-### User Interface
-- **`dashboard.py`**: Streamlit web application for interactive analysis
-
-### Hardware
-- **`hardware/`**: Arduino and Raspberry Pi implementations for physical demo
-
-## Data Flow
-
-1. **Input Data**: Carbon intensity, weather, electricity prices, demand profiles
-2. **Model Initialization**: Battery, solar, and demand models with degradation
-3. **Workload Analysis**: Identify flexible loads for scheduling
-4. **Optimization**: Multi-objective dispatch decisions with carbon-cost balancing
-5. **Simulation**: Time-series execution with battery degradation tracking
-6. **Hardware Control**: Relay activation for real system control (demo)
-7. **Visualization**: Interactive dashboard with real-time metrics
-
-## Configuration
-
-### System Parameters
-- **Battery**: Capacity (kWh), max power (kW), efficiency, degradation rates
-- **Solar**: Installed capacity (kW), location coordinates, tilt/azimuth angles
-- **Demand**: Base load (kW), flexible fraction, peak factors
-- **Optimization**: Carbon weight, cost weight, safety margins
-
-### API Keys (Optional)
-For real data integration, set environment variables:
 ```bash
-export WATTTIME_API_KEY="your_key_here"
-export OPENWEATHER_API_KEY="your_key_here"
+python -m unittest discover -s tests -q
 ```
 
-## Results and Impact
+## Example Outputs
 
-### Performance Metrics
-- **Carbon Reduction**: Up to 35% emissions reduction with optimal scheduling
-- **Cost Savings**: 15-25% electricity cost reduction
-- **Renewable Utilization**: 80%+ renewable energy fraction achievable
-- **Peak Demand**: Reduced grid stress through battery and load shifting
+Representative prototype outputs include:
 
-### Technical Validation
-- **Battery Degradation**: Models validated against manufacturer data
-- **Solar Modeling**: Accuracy within 10% of measured irradiance
-- **Optimization**: Converges to global optimum within 5% for most scenarios
+- strategy comparison table with emissions, cost, renewable fraction, and peak grid draw
+- dispatch stack chart showing grid, solar, and battery contribution over time
+- battery state-of-charge chart
+- dashboard comparison view across all strategies
 
-## Contributing
+Generated artifacts from `demo.py` are written to:
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+- `outputs/demo_dispatch.png`
+- `outputs/demo_battery_soc.png`
 
-### Development Setup
-```bash
-# Install development dependencies
-pip install -r requirements-dev.txt
+## Key Results
 
-# Run tests
-python -m pytest tests/
+The current implementation is best framed as a benchmark simulation platform. In prototype scenarios, the optimized strategies generally reduce emissions and grid dependence relative to the baseline strategy, while the exact improvement depends on the synthetic input profile, battery size, solar availability, and flexible load assumptions.
 
-# Run linting
-flake8 src/
-```
+Examples from recent benchmark runs:
+
+- `carbon_min` and `optimized` consistently outperform the baseline on emissions in 24-hour scenarios.
+- `optimized` typically shows the highest renewable fraction in the included demo runs.
+- workload shifting can reduce emissions, but the results should be treated as prototype scenario outputs rather than validated operational forecasts.
+
+## Screenshots
+
+Add screenshots to `docs/screenshots/` and update the paths below when you are ready.
+
+### Dashboard view
+
+`docs/screenshots/dashboard-overview.png`
+
+### Energy dispatch chart
+
+`docs/screenshots/energy-dispatch-chart.png`
+
+### Battery SOC chart
+
+`docs/screenshots/battery-soc-chart.png`
+
+### Strategy comparison
+
+`docs/screenshots/strategy-comparison.png`
+
+## Folder Notes
+
+- `src/ecodispatch/` contains the core simulation package.
+- `dashboard.py` is the Streamlit entry point.
+- `demo.py` is the main portfolio/demo script for quick evaluation.
+- `outputs/` is reserved for generated charts and result artifacts.
+- `hardware/` contains prototype hardware integration examples, not production firmware.
+- `docs/` contains architecture notes and screenshot placeholders for GitHub presentation.
+
+## Professional Summary
+
+EcoDispatch demonstrates a practical engineering workflow around energy systems modeling: time-series simulation, dispatch strategy design, KPI analysis, visualization, and lightweight validation. It is appropriate to present as a prototype for carbon-aware data center energy optimization, a simulation platform for evaluating dispatch strategies, or a portfolio project focused on sustainability-oriented systems engineering.
+
+## Future Improvements
+
+- replace synthetic data generation with validated external data feeds
+- add scenario configuration files for repeatable benchmark cases
+- improve optimization rigor and objective weighting transparency
+- expand validation coverage for energy balance, tariff logic, and battery behavior
+- store dashboard exports and comparison reports automatically in `outputs/`
+- add CI checks for formatting, tests, and static analysis
+- include committed screenshots or a short demo GIF for stronger GitHub presentation
+
+## Resume-Ready Summary
+
+Suggested concise description:
+
+`Built EcoDispatch, a Python simulation prototype for carbon-aware data center energy optimization, modeling dispatch across grid, solar, battery storage, and flexible workloads with a Streamlit dashboard for scenario analysis.`
 
 ## License
 
-This project is licensed under the MIT License.
-
-## Citation
-
-If you use EcoDispatch in your research, please cite:
-
-```bibtex
-@software{ecodispatch2024,
-  title={EcoDispatch: Carbon-Aware Data Center Energy Optimizer},
-  author={Your Name},
-  year={2024},
-  url={https://github.com/yourusername/ecodispatch}
-}
-```
-
-## Acknowledgments
-
-- WattTime for carbon intensity data
-- OpenWeatherMap for weather data
-- CAISO for electricity price data
-- Adafruit for sensor libraries
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License.
+This repository is released under the MIT License. See [LICENSE](LICENSE).

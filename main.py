@@ -13,6 +13,14 @@ from ecodispatch import EcoDispatch
 from ecodispatch.visualization import plot_dispatch, plot_battery_soc
 
 
+OUTPUTS_DIR = os.path.join(os.path.dirname(__file__), 'outputs')
+
+
+def ensure_outputs_dir() -> None:
+    """Create the outputs directory for generated artifacts."""
+    os.makedirs(OUTPUTS_DIR, exist_ok=True)
+
+
 def load_sample_data() -> Dict[str, pd.DataFrame]:
     """
     Load sample simulation data.
@@ -61,6 +69,7 @@ def main():
     """
     print("EcoDispatch: Carbon-Aware Data Center Energy Optimizer")
     print("=" * 60)
+    ensure_outputs_dir()
 
     # Load data
     data = load_sample_data()
@@ -75,15 +84,17 @@ def main():
         result = EcoDispatch.simulate(data, strategy=strategy)
         results[strategy] = result
 
-        # Calculate metrics (placeholder - would need actual implementation)
         print(f"Strategy: {strategy}")
-        print(".2f")
-        print(".2f")
+        print(f"  Total grid energy: {result['dispatch']['grid'].sum():.2f} kWh")
+        print(f"  Peak grid draw: {result['dispatch']['grid'].max():.2f} kW")
 
     # Generate plots
     print("\nGenerating visualizations...")
-    plot_dispatch(results['carbon_min'])
-    plot_battery_soc(results['carbon_min']['battery_soc'])
+    plot_dispatch(results['carbon_min'], os.path.join(OUTPUTS_DIR, 'main_dispatch.png'))
+    plot_battery_soc(
+        results['carbon_min']['battery_soc'],
+        os.path.join(OUTPUTS_DIR, 'main_battery_soc.png')
+    )
 
     print("\nSimulation complete!")
 
