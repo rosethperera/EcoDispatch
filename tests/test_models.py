@@ -1,7 +1,12 @@
 import unittest
+import sys
+from pathlib import Path
 
 import pandas as pd
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
+from ecodispatch.metrics import calculate_metrics
 from ecodispatch.models import Battery, SolarPV, DemandProfile
 from ecodispatch.simulation import EcoDispatch
 
@@ -87,6 +92,54 @@ class TestSimulation(unittest.TestCase):
         )
         self.assertTrue(results["battery_soc"]["soc"].between(0, 1).all())
         self.assertEqual(len(results["solar_available"]), len(index))
+
+    def test_optimized_strategy_serves_full_load_and_metrics_track_coverage(self):
+        index = pd.date_range("2023-01-01", periods=6, freq="h")
+        demand = pd.DataFrame(
+            {
+                "demand_kw": [200.0, 220.0, 250.0, 240.0, 230.0, 210.0],
+                "flexible_fraction": [0.3] * 6,
+            },
+            index=index,
+        )
+        carbon = pd.DataFrame(
+            {"carbon_gco2_per_kwh": [450.0, 420.0, 380.0, 300.0, 280.0, 350.0]},
+            index=index,
+        )
+        price = pd.DataFrame(
+            {"price_usd_per_kwh": [0.12, 0.13, 0.16, 0.14, 0.11, 0.10]},
+            index=index,
+        )
+        solar = pd.DataFrame(
+            {"solar_kw": [0.0, 30.0, 80.0, 100.0, 20.0, 0.0]},
+            index=index,
+        )
+        data = {
+            "demand": demand,
+            "carbon_intensity": carbon,
+            "price": price,
+            "solar_generation": solar,
+            "config": {
+                "battery_capacity_kwh": 200.0,
+                "battery_max_power_kw": 80.0,
+                "solar_capacity_kw": 100.0,
+                "flexible_load_fraction": 0.3,
+            },
+        }
+
+        results = EcoDispatch.simulate(data, strategy="optimized")
+        dispatched_energy = results["dispatch"].sum(axis=1)
+        expected_served_load = results["demand_served"]["demand_kw"]
+
+        self.assertTrue(((dispatched_energy - expected_served_load).abs() <= 1e-6).all())
+
+        metrics = calculate_metrics(
+            results,
+            carbon["carbon_gco2_per_kwh"],
+            price["price_usd_per_kwh"],
+        )
+        self.assertAlmostEqual(metrics["load_served_fraction"], 1.0, places=6)
+        self.assertAlmostEqual(metrics["unmet_demand_kwh"], 0.0, places=6)
 
 
 if __name__ == "__main__":

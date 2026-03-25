@@ -140,6 +140,37 @@ The dashboard allows you to:
 - compare all strategies side by side
 - inspect dispatch, emissions, battery SOC, and weather summaries
 
+### Use real external data
+
+The project can now use a mix of real and synthetic inputs:
+
+- Weather: real data from Open-Meteo by default, no API key required
+- Carbon intensity: optional real data from Electricity Maps when configured
+- Electricity price: optional real day-ahead price data from Electricity Maps when configured
+- Demand: still synthetic unless you connect your own telemetry source
+
+To enable real carbon and price data, set these environment variables before starting the app:
+
+```powershell
+$env:ELECTRICITYMAPS_API_TOKEN="your_token_here"
+$env:ECODISPATCH_CARBON_PROVIDER="electricitymaps"
+$env:ECODISPATCH_PRICE_PROVIDER="electricitymaps"
+```
+
+If those variables are not set, EcoDispatch automatically falls back to synthetic benchmark data for carbon intensity and price.
+
+To avoid typing those PowerShell environment variables every time:
+
+1. Copy [.env.example](/c:/Users/roset/Energy%20saving%20for%20data%20center/.env.example) to `.env.local`
+2. Paste your real Electricity Maps token into `.env.local`
+3. Start the dashboard with:
+
+```powershell
+.\run_dashboard.ps1
+```
+
+The `.env.local` file is ignored by git so your token stays local to your machine.
+
 ### Run the test suite
 
 ```bash
