@@ -63,7 +63,7 @@ if %ERRORLEVEL% EQU 0 (
     echo 1. Add repository topics: python, optimization, sustainability, data-center
     echo 2. Pin the repository on your GitHub profile
     echo 3. Add a demo video or GIF showing 'python demo.py'
-    echo 4. Share on LinkedIn: 'Built a system that reduces data center emissions by 21%%'
+    echo 4. Share on LinkedIn: 'Built a simulation prototype for carbon-aware data center energy optimization'
     echo.
     echo 📊 Your project demonstrates:
     echo • Advanced optimization algorithms

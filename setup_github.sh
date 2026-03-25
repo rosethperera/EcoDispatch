@@ -27,4 +27,4 @@ echo "3. Enable GitHub Pages for the README"
 echo "4. Add topics: python, optimization, sustainability, data-center, carbon-aware"
 echo
 echo "🎯 Repository Description:"
-echo "\"Carbon-aware data center energy optimization system with multi-objective optimization, workload shifting, and hardware integration. Reduces emissions by 15-35% while controlling costs.\""
+echo "\"Carbon-aware data center energy optimization prototype with simulation, workload shifting, and hardware integration concepts.\""
