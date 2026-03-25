@@ -1,6 +1,6 @@
 # EcoDispatch Hardware Demo
 
-This directory contains hardware implementations for the EcoDispatch carbon-aware energy management system.
+This directory contains prototype hardware experiments that show how EcoDispatch concepts could connect to battery telemetry and relay control. These files should be treated as demo and exploration code, not as a validated deployment package.
 
 ## Arduino Implementation
 
@@ -9,7 +9,7 @@ This directory contains hardware implementations for the EcoDispatch carbon-awar
 Arduino sketch for battery monitoring and protection.
 
 **Features:**
-- Real-time battery voltage, current, and temperature monitoring
+- Battery voltage, current, and temperature monitoring
 - State of charge (SOC) estimation using Coulomb counting
 - Safety protection (over/under voltage, temperature)
 - Relay control for battery disconnect
@@ -65,9 +65,9 @@ Python script for Raspberry Pi hardware control and EcoDispatch integration.
 **Features:**
 - Serial communication with Arduino
 - GPIO control for relays and indicators
-- Real-time dispatch decision execution
+- Demo relay control based on EcoDispatch-derived power decisions
 - Safety monitoring and alerts
-- Integration with EcoDispatch simulation
+- Integration with EcoDispatch simulation outputs
 
 **Hardware Requirements:**
 - Raspberry Pi 4/Zero W
@@ -106,13 +106,15 @@ GPIO 23 -> Buzzer for alerts
 
 ## Integration with EcoDispatch
 
-The hardware demo integrates with the main EcoDispatch simulation:
+The hardware demo shows one possible prototype workflow:
 
-1. Runs EcoDispatch simulation with carbon-minimizing strategy
-2. Reads real battery data from Arduino
-3. Executes dispatch decisions through relay control
-4. Monitors system safety and provides alerts
-5. Logs all data for analysis
+1. Run an EcoDispatch simulation strategy locally
+2. Read battery telemetry from the Arduino sketch
+3. Map simulated power decisions to simple relay-control actions
+4. Monitor basic safety conditions and provide alerts
+5. Log data for debugging and inspection
+
+This is a concept demonstration. It does not establish that the control loop is ready for direct operation on a real energy system.
 
 ## Safety Features
 
@@ -132,3 +134,4 @@ All sensor data and control actions are logged to `ecodispatch_hardware.log` for
 - Multiple battery bank support
 - Advanced BMS integration
 - Web interface for remote monitoring
+- Stronger validation between simulated dispatch outputs and physical hardware behavior
